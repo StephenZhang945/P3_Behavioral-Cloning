@@ -26,7 +26,8 @@ from keras.models import Sequential
 from keras.layers import Flatten, Dense
 
 model = Sequential()
-model.add(Flatten(input_shape = (160, 320, 3)))
+model.add(Lambda(lambda x : x / 255.0, input_shape(160, 320, 3)))
+model.add(Flatten())
 model.add(Dense(1))
 
 model.compile(loss = 'mse', optimizer = 'adam')
