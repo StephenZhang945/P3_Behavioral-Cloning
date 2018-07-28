@@ -98,6 +98,7 @@ The overall strategy for deriving a model architecture was to ...
 
 My first step was to use a convolution neural network model similar to the Lenet， I thought this model might be appropriate because Lenet is classic image trainning model, but car keeps driving in straight and drifting off the road at the corner. Then i introduced [nVidia Autonomous Car Group](https://devblogs.nvidia.com/parallelforall/deep-learning-self-driving-cars/) model, the car driving bettern in the corner, but car keeps drifting off into that gap.
 
+![drifting off point](https://github.com/StephenZhang945/P3_Behavioral-Cloning/blob/master/examples/drift%20off%20point%200.png)
 ![drifting off point](https://github.com/StephenZhang945/P3_Behavioral-Cloning/blob/master/examples/drifting%20off.png)
 
 In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting. 
@@ -110,9 +111,9 @@ At the end of the process, the vehicle is able to drive autonomously around the 
 
 #### 2. Final Model Architecture
 
-The final model architecture (model.py lines 69-89) consisted of a convolution neural network with the following layers and layer sizes ...
+The final model architecture (model.py lines 69-89) consisted of a convolution neural network with the following layers and layer sizes.
 
-Here is a visualization of the architecture (note: visualizing the architecture is optional according to the project rubric)
+Here is a visualization of the architecture:
 
 ```
 ____________________________________________________________________________________________________
@@ -168,9 +169,9 @@ ________________________________________________________________________________
 
 To capture good driving behavior, I first recorded two laps on track one using center lane driving. Here is an example image of center lane driving:
 
-![alt text][image2]
+![center](https://github.com/StephenZhang945/P3_Behavioral-Cloning/blob/master/examples/center.png)
 
-I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to recover to center lane when car drift to the side of road. These images show what a recovery looks like starting from ... :
+I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to recover to center lane when car drift to the left or right side of road.
 
 ![left side](https://github.com/StephenZhang945/P3_Behavioral-Cloning/blob/master/examples/left%20side.png)
 ![right side](https://github.com/StephenZhang945/P3_Behavioral-Cloning/blob/master/examples/right%20side.png)
@@ -179,8 +180,9 @@ Then I repeated this process on track two in order to get more data points.
 
 To augment the data set, I also flipped images and angles thinking that this would ... For example, here is an image that has then been flipped:
 
-![alt text][image6]
-![alt text][image7]
+![fliped](https://github.com/StephenZhang945/P3_Behavioral-Cloning/blob/master/examples/fliped_img.png)
+![original](https://github.com/StephenZhang945/P3_Behavioral-Cloning/blob/master/examples/original_img.png)
+
 
 Etc ....
 
@@ -190,21 +192,8 @@ Epoch 2/3
 Epoch 3/3
 12780/12688 [==============================] - 31s - loss: 0.0272 - val_loss: 0.0263
 
-Epoch 1/3
-I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:937] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-I tensorflow/core/common_runtime/gpu/gpu_device.cc:885] Found device 0 with properties: 
-name: GRID K520
-major: 3 minor: 0 memoryClockRate (GHz) 0.797
-pciBusID 0000:00:03.0
-Total memory: 3.94GiB
-Free memory: 3.91GiB
-I tensorflow/core/common_runtime/gpu/gpu_device.cc:906] DMA: 0 
-I tensorflow/core/common_runtime/gpu/gpu_device.cc:916] 0:   Y 
-I tensorflow/core/common_runtime/gpu/gpu_device.cc:975] Creating TensorFlow device (/gpu:0) -> (device: 0, name: GRID K520, pci bus id: 0000:00:03.0)
-12600/12688 [============================>.] - ETA: 0s - loss: 0.0310/home/carnd/anaconda3/envs/carnd-term1/lib/python3.5/site-packages/keras/engine/training.py:1569: UserWarning: Epoch comprised more than `samples_per_epoch` samples, which might affect learning results. Set `samples_per_epoch` correctly to avoid this warning.
-  warnings.warn('Epoch comprised more than '
 
-After the collection process, I had 15860 number of data points. I then preprocessed this data by add Cropping = ((70,25),(0,0)).
+After the collection process, I had 15860 number of data points. I then preprocessed this data by color space convert from BRG to RGB， and Cropping = ((70,25),(0,0)).
 
 I finally randomly shuffled the data set and put 20% of the data into a validation set. 
 
