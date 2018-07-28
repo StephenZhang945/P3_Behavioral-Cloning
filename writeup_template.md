@@ -1,8 +1,5 @@
-# **Behavioral Cloning** 
+# **Behavioral Cloning Writeup** 
 
-## Writeup
-
----
 
 **Behavioral Cloning Project**
 
@@ -52,23 +49,55 @@ The clone.py file contains the code for training and saving the convolution neur
 
 #### 1. An appropriate model architecture has been employed
 
-My model consists of a convolution neural network with 3x3 filter sizes and depths between 32 and 128 (model.py lines 18-24) 
-
-The model includes RELU layers to introduce nonlinearity (code line 20), and the data is normalized in the model using a Keras lambda layer (code line 18). 
+My model consists of a 5 layers convolution neural network with 5x5 and 3x3 filter sizes and depths between 36 and 64.
+Acativation includes 7 layers of ELU, and the data is normalized in the model using a Keras lambda layer (code line 70).
+```sh
+model = Sequential()
+model.add(Lambda(lambda x : (x / 255.0) - 0.5, input_shape=(160, 320, 3)))
+model.add(Cropping2D(cropping = ((70,25),(0,0))))
+model.add(Convolution2D(24,5,5, subsample=(2,2), activation= 'relu'))
+model.add(ELU())
+model.add(Dropout(0.5))
+model.add(Convolution2D(36,5,5, subsample=(2,2), activation= 'relu'))
+model.add(ELU())
+model.add(Convolution2D(48,5,5, subsample=(2,2), activation= 'relu'))
+model.add(ELU())
+model.add(Convolution2D(64,3,3, activation='relu'))
+model.add(ELU())
+model.add(Convolution2D(64,3,3, activation='relu'))
+model.add(Flatten())
+model.add(Dense(100))
+model.add(ELU())
+model.add(Dense(50))
+model.add(ELU())
+model.add(Dense(10))
+model.add(ELU())
+model.add(Dense(1))
+```
 
 #### 2. Attempts to reduce overfitting in the model
 
-The model contains dropout layers in order to reduce overfitting (model.py lines 21). 
+The model contains dropout layers in order to reduce overfitting (clone.py lines 74). 
 
-The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 10-16). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
+The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 14). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
 
 #### 3. Model parameter tuning
 
-The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 25).
+The model used an adam optimizer, so the learning rate was not tuned manually (clone.py line 91).
 
 #### 4. Appropriate training data
 
-Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road ... 
+Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road, plus 0.2 correction to the left steering angle, and subract 0.2 for the right angle, use 'min' and 'max' to avoid left and right steering angle beyond 1.0 or less than -1.0.
+```sh
+correction = 0.2
+center_angle = float(batch_sample[3])
+if i ==1:
+    angles.append(min(1.0, center_angle + correction))
+elif i ==2:
+    angles.append(max(-1.0, center_angle - correction))
+else:
+    angles.append(center_angle)
+```
 
 For details about how I created the training data, see the next section. 
 
