@@ -180,17 +180,9 @@ Then I repeated this process on track two in order to get more data points.
 
 To augment the data set, I also flipped images and angles thinking that this would ... For example, here is an image that has then been flipped:
 
-![fliped](https://github.com/StephenZhang945/P3_Behavioral-Cloning/blob/master/examples/fliped_img.png)
 ![original](https://github.com/StephenZhang945/P3_Behavioral-Cloning/blob/master/examples/original_img.png)
+![fliped](https://github.com/StephenZhang945/P3_Behavioral-Cloning/blob/master/examples/fliped_img.png)
 
-
-Etc ....
-
-12780/12688 [==============================] - 76s - loss: 0.0310 - val_loss: 0.0253
-Epoch 2/3
-12780/12688 [==============================] - 31s - loss: 0.0278 - val_loss: 0.0246
-Epoch 3/3
-12780/12688 [==============================] - 31s - loss: 0.0272 - val_loss: 0.0263
 
 
 After the collection process, I had 15860 number of data points. I then preprocessed this data by color space convert from BRG to RGB， and Cropping = ((70,25),(0,0)).
@@ -198,3 +190,11 @@ After the collection process, I had 15860 number of data points. I then preproce
 I finally randomly shuffled the data set and put 20% of the data into a validation set. 
 
 I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was 3 as evidenced by that mini validation loss appeared at 3 epochs about,  I used an adam optimizer so that manually training the learning rate wasn't necessary.
+'''
+Epoch 1/3
+12780/12688 [==============================] - 76s - loss: 0.0310 - val_loss: 0.0253
+Epoch 2/3
+12780/12688 [==============================] - 31s - loss: 0.0278 - val_loss: 0.0246
+Epoch 3/3
+12780/12688 [==============================] - 31s - loss: 0.0272 - val_loss: 0.0263
+'''
