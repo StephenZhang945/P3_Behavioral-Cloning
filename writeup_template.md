@@ -13,7 +13,7 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./examples/placeholder.png "Model Visualization"
+[image1]: ./examples/drifting off.png "drifting Off Point"
 [image2]: ./examples/placeholder.png "Grayscaling"
 [image3]: ./examples/placeholder_small.png "Recovery Image"
 [image4]: ./examples/placeholder_small.png "Recovery Image"
@@ -107,25 +107,57 @@ For details about how I created the training data, see the next section.
 
 The overall strategy for deriving a model architecture was to ...
 
-My first step was to use a convolution neural network model similar to the ... I thought this model might be appropriate because ...
+My first step was to use a convolution neural network model similar to the Lenet， I thought this model might be appropriate because Lenet is classic image trainning model, but car keeps driving in straight and drifting off the road at the corner. Then i introduced [nVidia Autonomous Car Group](https://devblogs.nvidia.com/parallelforall/deep-learning-self-driving-cars/) model, the car driving bettern in the corner, but car keeps drifting off into that gap.
+
+![alt text][image1]
 
 In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting. 
 
-To combat the overfitting, I modified the model so that ...
+To combat the overfitting, I added 'Dropout(0.5)'.
 
-Then I ... 
-
-The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track... to improve the driving behavior in these cases, I ....
+Then I update original data again by running simulator training mode counter-clockwise and clockwise circle and circle, to make sure at least 4K samples.
 
 At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
 
 #### 2. Final Model Architecture
 
-The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers and layer sizes ...
+The final model architecture (model.py lines 69-89) consisted of a convolution neural network with the following layers and layer sizes ...
 
 Here is a visualization of the architecture (note: visualizing the architecture is optional according to the project rubric)
 
-![alt text][image1]
+```
+Layer (type)                     Output Shape          Param #     Connected to                     
+====================================================================================================
+lambda_1 (Lambda)                (None, 160, 320, 3)   0           lambda_input_2[0][0]             
+____________________________________________________________________________________________________
+cropping2d_1 (Cropping2D)        (None, 90, 320, 3)    0           lambda_1[0][0]                   
+____________________________________________________________________________________________________
+convolution2d_1 (Convolution2D)  (None, 43, 158, 24)   1824        cropping2d_1[0][0]               
+___________________________________________________________________________________________________
+convolution2d_2 (Convolution2D)  (None, 20, 77, 36)    21636       convolution2d_1[0][0]            
+____________________________________________________________________________________________________
+ELU_1 (ELU)                      (None, 20, 77, 36)    0.          convolution2d_2[0][0]            
+____________________________________________________________________________________________________
+convolution2d_3 (Convolution2D)  (None, 8, 37, 48)     43248       convolution2d_2[0][0]            
+____________________________________________________________________________________________________
+convolution2d_4 (Convolution2D)  (None, 6, 35, 64)     27712       convolution2d_3[0][0]            
+____________________________________________________________________________________________________
+convolution2d_5 (Convolution2D)  (None, 4, 33, 64)     36928       convolution2d_4[0][0]            
+____________________________________________________________________________________________________
+flatten_1 (Flatten)              (None, 8448)          0           convolution2d_5[0][0]            
+____________________________________________________________________________________________________
+dense_1 (Dense)                  (None, 100)           844900      flatten_1[0][0]                  
+____________________________________________________________________________________________________
+dense_2 (Dense)                  (None, 50)            5050        dense_1[0][0]                    
+____________________________________________________________________________________________________
+dense_3 (Dense)                  (None, 10)            510         dense_2[0][0]                    
+____________________________________________________________________________________________________
+dense_4 (Dense)                  (None, 1)             11          dense_3[0][0]                    
+====================================================================================================
+Total params: 981,819
+Trainable params: 981,819
+Non-trainable params: 0
+```
 
 #### 3. Creation of the Training Set & Training Process
 
@@ -133,7 +165,7 @@ To capture good driving behavior, I first recorded two laps on track one using c
 
 ![alt text][image2]
 
-I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to .... These images show what a recovery looks like starting from ... :
+I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to recover to center lane when car drift to the side of road. These images show what a recovery looks like starting from ... :
 
 ![alt text][image3]
 ![alt text][image4]
@@ -141,16 +173,15 @@ I then recorded the vehicle recovering from the left side and right sides of the
 
 Then I repeated this process on track two in order to get more data points.
 
-To augment the data sat, I also flipped images and angles thinking that this would ... For example, here is an image that has then been flipped:
+To augment the data set, I also flipped images and angles thinking that this would ... For example, here is an image that has then been flipped:
 
 ![alt text][image6]
 ![alt text][image7]
 
 Etc ....
 
-After the collection process, I had X number of data points. I then preprocessed this data by ...
+After the collection process, I had 15860 number of data points. I then preprocessed this data by add Cropping = ((70,25),(0,0)).
 
+I finally randomly shuffled the data set and put 20% of the data into a validation set. 
 
-I finally randomly shuffled the data set and put Y% of the data into a validation set. 
-
-I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
+I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was 3 as evidenced by that mini validation loss appeared at 3 epochs about,  I used an adam optimizer so that manually training the learning rate wasn't necessary.
