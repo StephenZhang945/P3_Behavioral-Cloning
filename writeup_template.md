@@ -10,17 +10,6 @@ The goals / steps of this project are the following:
 * Test that the model successfully drives around track one without leaving the road
 * Summarize the results with a written report
 
-
-[//]: # (Image References)
-
-[image1]: ./examples/drifting off.png
-[image2]: ./examples/placeholder.png "Grayscaling"
-[image3]: ./examples/placeholder_small.png "Recovery Image"
-[image4]: ./examples/placeholder_small.png "Recovery Image"
-[image5]: ./examples/placeholder_small.png "Recovery Image"
-[image6]: ./examples/placeholder_small.png "Normal Image"
-[image7]: ./examples/placeholder_small.png "Flipped Image"
-
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
 
@@ -109,7 +98,7 @@ The overall strategy for deriving a model architecture was to ...
 
 My first step was to use a convolution neural network model similar to the Lenet， I thought this model might be appropriate because Lenet is classic image trainning model, but car keeps driving in straight and drifting off the road at the corner. Then i introduced [nVidia Autonomous Car Group](https://devblogs.nvidia.com/parallelforall/deep-learning-self-driving-cars/) model, the car driving bettern in the corner, but car keeps drifting off into that gap.
 
-![drifting off point](samples/drifting off.png)
+![drifting off point](https://github.com/StephenZhang945/P3_Behavioral-Cloning/blob/master/examples/drifting%20off.png)
 
 In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting. 
 
@@ -126,37 +115,53 @@ The final model architecture (model.py lines 69-89) consisted of a convolution n
 Here is a visualization of the architecture (note: visualizing the architecture is optional according to the project rubric)
 
 ```
+____________________________________________________________________________________________________
 Layer (type)                     Output Shape          Param #     Connected to                     
 ====================================================================================================
-lambda_1 (Lambda)                (None, 160, 320, 3)   0           lambda_input_2[0][0]             
+lambda_1 (Lambda)                (None, 160, 320, 3)   0           lambda_input_1[0][0]             
 ____________________________________________________________________________________________________
-cropping2d_1 (Cropping2D)        (None, 90, 320, 3)    0           lambda_1[0][0]                   
+cropping2d_1 (Cropping2D)        (None, 65, 320, 3)    0           lambda_1[0][0]                   
 ____________________________________________________________________________________________________
-convolution2d_1 (Convolution2D)  (None, 43, 158, 24)   1824        cropping2d_1[0][0]               
-___________________________________________________________________________________________________
-convolution2d_2 (Convolution2D)  (None, 20, 77, 36)    21636       convolution2d_1[0][0]            
+convolution2d_1 (Convolution2D)  (None, 31, 158, 24)   1824        cropping2d_1[0][0]               
 ____________________________________________________________________________________________________
-ELU_1 (ELU)                      (None, 20, 77, 36)    0.          convolution2d_2[0][0]            
+elu_1 (ELU)                      (None, 31, 158, 24)   0           convolution2d_1[0][0]            
 ____________________________________________________________________________________________________
-convolution2d_3 (Convolution2D)  (None, 8, 37, 48)     43248       convolution2d_2[0][0]            
+dropout_1 (Dropout)              (None, 31, 158, 24)   0           elu_1[0][0]                      
 ____________________________________________________________________________________________________
-convolution2d_4 (Convolution2D)  (None, 6, 35, 64)     27712       convolution2d_3[0][0]            
+convolution2d_2 (Convolution2D)  (None, 14, 77, 36)    21636       dropout_1[0][0]                  
 ____________________________________________________________________________________________________
-convolution2d_5 (Convolution2D)  (None, 4, 33, 64)     36928       convolution2d_4[0][0]            
+elu_2 (ELU)                      (None, 14, 77, 36)    0           convolution2d_2[0][0]            
 ____________________________________________________________________________________________________
-flatten_1 (Flatten)              (None, 8448)          0           convolution2d_5[0][0]            
+convolution2d_3 (Convolution2D)  (None, 5, 37, 48)     43248       elu_2[0][0]                      
 ____________________________________________________________________________________________________
-dense_1 (Dense)                  (None, 100)           844900      flatten_1[0][0]                  
+elu_3 (ELU)                      (None, 5, 37, 48)     0           convolution2d_3[0][0]            
 ____________________________________________________________________________________________________
-dense_2 (Dense)                  (None, 50)            5050        dense_1[0][0]                    
+convolution2d_4 (Convolution2D)  (None, 3, 35, 64)     27712       elu_3[0][0]                      
 ____________________________________________________________________________________________________
-dense_3 (Dense)                  (None, 10)            510         dense_2[0][0]                    
+elu_4 (ELU)                      (None, 3, 35, 64)     0           convolution2d_4[0][0]            
 ____________________________________________________________________________________________________
-dense_4 (Dense)                  (None, 1)             11          dense_3[0][0]                    
+convolution2d_5 (Convolution2D)  (None, 1, 33, 64)     36928       elu_4[0][0]                      
+____________________________________________________________________________________________________
+flatten_1 (Flatten)              (None, 2112)          0           convolution2d_5[0][0]            
+____________________________________________________________________________________________________
+dense_1 (Dense)                  (None, 100)           211300      flatten_1[0][0]                  
+____________________________________________________________________________________________________
+elu_5 (ELU)                      (None, 100)           0           dense_1[0][0]                    
+____________________________________________________________________________________________________
+dense_2 (Dense)                  (None, 50)            5050        elu_5[0][0]                      
+____________________________________________________________________________________________________
+elu_6 (ELU)                      (None, 50)            0           dense_2[0][0]                    
+____________________________________________________________________________________________________
+dense_3 (Dense)                  (None, 10)            510         elu_6[0][0]                      
+____________________________________________________________________________________________________
+elu_7 (ELU)                      (None, 10)            0           dense_3[0][0]                    
+____________________________________________________________________________________________________
+dense_4 (Dense)                  (None, 1)             11          elu_7[0][0]                      
 ====================================================================================================
-Total params: 981,819
-Trainable params: 981,819
+Total params: 348,219
+Trainable params: 348,219
 Non-trainable params: 0
+____________________________________________________________________________________________________
 ```
 
 #### 3. Creation of the Training Set & Training Process
@@ -167,9 +172,8 @@ To capture good driving behavior, I first recorded two laps on track one using c
 
 I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to recover to center lane when car drift to the side of road. These images show what a recovery looks like starting from ... :
 
-![alt text][image3]
-![alt text][image4]
-![alt text][image5]
+![left side](https://github.com/StephenZhang945/P3_Behavioral-Cloning/blob/master/examples/left%20side.png)
+![right side](https://github.com/StephenZhang945/P3_Behavioral-Cloning/blob/master/examples/right%20side.png)
 
 Then I repeated this process on track two in order to get more data points.
 
@@ -179,6 +183,26 @@ To augment the data set, I also flipped images and angles thinking that this wou
 ![alt text][image7]
 
 Etc ....
+
+12780/12688 [==============================] - 76s - loss: 0.0310 - val_loss: 0.0253
+Epoch 2/3
+12780/12688 [==============================] - 31s - loss: 0.0278 - val_loss: 0.0246
+Epoch 3/3
+12780/12688 [==============================] - 31s - loss: 0.0272 - val_loss: 0.0263
+
+Epoch 1/3
+I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:937] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+I tensorflow/core/common_runtime/gpu/gpu_device.cc:885] Found device 0 with properties: 
+name: GRID K520
+major: 3 minor: 0 memoryClockRate (GHz) 0.797
+pciBusID 0000:00:03.0
+Total memory: 3.94GiB
+Free memory: 3.91GiB
+I tensorflow/core/common_runtime/gpu/gpu_device.cc:906] DMA: 0 
+I tensorflow/core/common_runtime/gpu/gpu_device.cc:916] 0:   Y 
+I tensorflow/core/common_runtime/gpu/gpu_device.cc:975] Creating TensorFlow device (/gpu:0) -> (device: 0, name: GRID K520, pci bus id: 0000:00:03.0)
+12600/12688 [============================>.] - ETA: 0s - loss: 0.0310/home/carnd/anaconda3/envs/carnd-term1/lib/python3.5/site-packages/keras/engine/training.py:1569: UserWarning: Epoch comprised more than `samples_per_epoch` samples, which might affect learning results. Set `samples_per_epoch` correctly to avoid this warning.
+  warnings.warn('Epoch comprised more than '
 
 After the collection process, I had 15860 number of data points. I then preprocessed this data by add Cropping = ((70,25),(0,0)).
 
