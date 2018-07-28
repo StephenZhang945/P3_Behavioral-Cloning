@@ -190,7 +190,7 @@ After the collection process, I had 15860 number of data points. I then preproce
 I finally randomly shuffled the data set and put 20% of the data into a validation set. 
 
 I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was 3 as evidenced by that mini validation loss appeared at 3 epochs about,  I used an adam optimizer so that manually training the learning rate wasn't necessary.
-'''
+'''sh
 Epoch 1/3
 12780/12688 [==============================] - 76s - loss: 0.0310 - val_loss: 0.0253
 Epoch 2/3
